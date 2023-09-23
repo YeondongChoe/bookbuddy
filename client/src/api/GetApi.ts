@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BookList, BookMarkList, BookInfo } from '../model/BookList';
-import { getCookie } from '../utils/cookie';
+import { getCookie } from '../utils/ReactCookie';
 import { CartListType } from '../model/CartList';
 
 const SERVER_HOST = process.env.REACT_APP_SERVER_HOST;
@@ -47,7 +47,7 @@ export const getBookList = async (
 };
 
 export const getCartList = async (
-  setCartList: (cartList: CartListType[]) => void,
+  setCartList?: (cartList: CartListType[]) => void,
 ) => {
   try {
     const response = await axios.get(`${SERVER_HOST}/cart`, {
@@ -56,7 +56,8 @@ export const getCartList = async (
         Authorization: getCookie('accessToken'),
       },
     });
-    setCartList(response.data);
+    setCartList && setCartList(response.data);
+    return response.data;
   } catch (err) {
     console.log(err);
     throw err;
@@ -104,23 +105,7 @@ export const getBookDetail = async (
   }
 };
 
-export const getBookmarkList = async (
-  setBookmarkList: (bookmarkList: BookList) => void,
-) => {
-  try {
-    const response = await axios.get(`${SERVER_HOST}/bookmark`, {
-      headers: {
-        'ngrok-skip-browser-warning': true,
-        Authorization: getCookie('accessToken'),
-      },
-    });
-    setBookmarkList(response.data);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getBookmarkmypage = async (
+export const getBookmark = async (
   setBookmarkList: (bookmarkList: BookMarkList[]) => void,
 ) => {
   try {
@@ -150,10 +135,10 @@ export const getLogout = async () => {
   }
 };
 
-export const getCSList = async (page: number) => {
+export const getCSList = async (page: number, itemsCountPerPage: number) => {
   try {
     const response = await axios.get(
-      `${SERVER_HOST}/board/cs?page=${page}&size=10`,
+      `${SERVER_HOST}/board/cs?page=${page}&size=${itemsCountPerPage}`,
       {
         headers: {
           'ngrok-skip-browser-warning': true,
@@ -211,10 +196,50 @@ export const getCSDetail = async (boardId: string) => {
   }
 };
 
-export const getOrderHistory = async (page: number) => {
+export const getOrderHistory = async (
+  page: number,
+  itemsCountPerPage: number,
+  recent?: boolean,
+) => {
+  try {
+    if (recent === true) {
+      const response = await axios.get(
+        `${SERVER_HOST}/order/ship/completed?page=${page}&size=${itemsCountPerPage}`,
+        {
+          headers: {
+            'ngrok-skip-browser-warning': true,
+            Authorization: getCookie('accessToken'),
+          },
+        },
+      );
+      const result = response.data;
+      return result;
+    } else {
+      const response = await axios.get(
+        `${SERVER_HOST}/order/ship?page=${page}&size=${itemsCountPerPage}`,
+        {
+          headers: {
+            'ngrok-skip-browser-warning': true,
+            Authorization: getCookie('accessToken'),
+          },
+        },
+      );
+      const result = response.data;
+      return result;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const getAdminCSList = async (
+  page: number,
+  itemsCountPerPage: number,
+) => {
   try {
     const response = await axios.get(
-      `${SERVER_HOST}/order/ship?page=${page}&size=5`,
+      `${SERVER_HOST}/admin/cs?page=${page}&size=${itemsCountPerPage}`,
       {
         headers: {
           'ngrok-skip-browser-warning': true,
@@ -230,10 +255,13 @@ export const getOrderHistory = async (page: number) => {
   }
 };
 
-export const getAdminOrderHistory = async (page: number) => {
+export const getAdminOrderHistory = async (
+  page: number,
+  itemsCountPerPage: number,
+) => {
   try {
     const response = await axios.get(
-      `${SERVER_HOST}/admin/order?page=${page}&size=10`,
+      `${SERVER_HOST}/admin/order?page=${page}&size=${itemsCountPerPage}`,
       {
         headers: {
           'ngrok-skip-browser-warning': true,

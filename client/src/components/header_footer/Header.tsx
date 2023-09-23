@@ -4,7 +4,7 @@ import Logo from '../../icons/Logo';
 import SearchBar from '../search/SearchBar';
 import { Link, useNavigate } from 'react-router-dom';
 import InfoNav from '../info_nav/InfoNav';
-import { getCookie } from '../../utils/cookie';
+import { getCookie } from '../../utils/ReactCookie';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Header = () => {
     <>
       <Styled_Header.Container>
         <Styled_Header.Div>
-          <Link to={'/list'}>
+          <Link to={'/'}>
             <Logo />
           </Link>
           <Styled_Header.Menu>

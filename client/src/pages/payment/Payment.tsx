@@ -10,7 +10,7 @@ import { CartListAtom } from '../../recoil/CartItem';
 import { emailRegExp } from '../../utils/RegExp';
 import { CartListType } from '../../model/CartList';
 import { getCartList } from '../../api/GetApi';
-import { getCookie } from '../../utils/cookie';
+import { getCookie } from '../../utils/ReactCookie';
 import PostCode from '../../components/input/PostCode';
 import { PostCodeAdrsAtom } from '../../recoil/PostCodeModal';
 import { useNavigate } from 'react-router-dom';
@@ -72,6 +72,17 @@ const Payment = () => {
       alert('일반전화 외 모든 항목을 입력해주세요');
     } else if (!emailRegExp.test(allDataCopy.email)) {
       alert('이메일 형식에 맞게 작성해주세요');
+    } else if (
+      allData.cstmrMobile.length !== 11 ||
+      (allData.cstmrTel &&
+        allData.cstmrTel.length < 9 &&
+        allData.cstmrTel.length > 3) ||
+      allData.shipMobile.length !== 11 ||
+      (allData.shipTel &&
+        allData.shipTel.length < 9 &&
+        allData.shipTel.length > 3)
+    ) {
+      alert('전화번호 전체를 입력해주세요');
     } else {
       // api 전송
       let data = {

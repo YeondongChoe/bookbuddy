@@ -6,15 +6,19 @@ export const Styled_Apply = {
     display: flex;
     flex-flow: column;
     width: 1300px;
+    height: 800px;
 
     ${DeviceQuery.bigScreen`
       width: calc(1300px / ${screenScale.bigScreen});
+      height: calc(800px / ${screenScale.bigScreen});
     `}
     ${DeviceQuery.desktop`
       width: calc(1300px / ${screenScale.desktop});
+      height: calc(800px / ${screenScale.desktop});
     `}
     ${DeviceQuery.tablet`
       width: calc(1300px / ${screenScale.tablet});
+      height: calc(800px / ${screenScale.tablet});
     `}
 
     .header {
@@ -110,6 +114,37 @@ export const Styled_Apply = {
         ${DeviceQuery.tablet`
           height: calc(360px / ${screenScale.tablet});
           font-size: calc(var(--basic-font-size) / ${screenScale.tablet});
+        `}
+      }
+      #counter {
+        display: flex;
+        justify-content: end;
+        font-size: var(--basic-font-size);
+
+        ${DeviceQuery.bigScreen`
+          font-size: calc(var(--basic-font-size) / ${screenScale.bigScreen});
+        `}
+        ${DeviceQuery.desktop`
+          font-size: calc(var(--basic-font-size) / ${screenScale.desktop});
+        `}
+        ${DeviceQuery.tablet`
+          font-size: calc(var(--basic-font-size) / ${screenScale.tablet});
+        `}
+      }
+      #message {
+        display: flex;
+        justify-content: end;
+        font-size: var(--message-font-size);
+        color: var(--light-border-color);
+
+        ${DeviceQuery.bigScreen`
+          font-size: calc(var(--message-font-size) / ${screenScale.bigScreen});
+        `}
+        ${DeviceQuery.desktop`
+          font-size: calc(var(--message-font-size) / ${screenScale.desktop});
+        `}
+        ${DeviceQuery.tablet`
+          font-size: calc(var(--message-font-size) / ${screenScale.tablet});
         `}
       }
       .submit {

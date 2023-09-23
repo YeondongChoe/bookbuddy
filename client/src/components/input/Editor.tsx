@@ -7,8 +7,9 @@ import {
   CSContentAtom,
   CSPatchClickedAtom,
   CSDetailAtom,
+  CharacterCount,
 } from '../../recoil/CS';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 Quill.register('modules/imageActions', ImageActions);
 Quill.register('modules/imageFormats', ImageFormats);
@@ -48,10 +49,19 @@ export const formats = [
 
 const Editor = () => {
   const [value, setValue] = useRecoilState(CSContentAtom);
-  const quillRef = useRef(null);
+  const quillRef = useRef<any>(null);
   const csPatchClicked = useRecoilValue(CSPatchClickedAtom);
   const [csDetail, setCSDetail] = useRecoilState(CSDetailAtom);
   const [patchValue, setPatchValue] = useState(csDetail.question.content);
+  const setCharacterCount = useSetRecoilState(CharacterCount);
+  const unprivilegedEditor =
+    quillRef.current && quillRef.current.unprivilegedEditor;
+
+  useEffect(() => {
+    if (unprivilegedEditor) {
+      setCharacterCount(unprivilegedEditor.getLength());
+    }
+  }, [value, patchValue]);
 
   useEffect(() => {
     setCSDetail({
@@ -63,6 +73,19 @@ const Editor = () => {
     });
     setValue('');
   }, [patchValue]);
+
+  const CharacterLimit = (event: any) => {
+    if (unprivilegedEditor.getLength() > 98 && event.key !== 'Backspace') {
+      event.preventDefault();
+      if (event.key.match(/[^0-9]/g)) {
+        if (csPatchClicked === true) {
+          setPatchValue(patchValue.replace(/.....$/, ''));
+        } else {
+          setValue(value.replace(/.....$/, ''));
+        }
+      }
+    }
+  };
 
   // const imageHandler = () => {
   //   const input = document.createElement('input');
@@ -116,6 +139,7 @@ const Editor = () => {
       modules={modules}
       formats={formats}
       ref={quillRef}
+      onKeyDown={CharacterLimit}
     />
   );
 };
